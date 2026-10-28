@@ -1,0 +1,85 @@
+/*
+ * PC status, set like Subscription usage: a mono "user@host" card with key and value rows, then sections as titled rules
+ * with rows of small squares for how full each resource is, and a strip of bars for the link's last minute. Every color
+ * is one of the app's theme tokens, so it follows each theme and Appearance's density.
+ */
+.pc { width: 100%; max-width: 40rem; margin-inline: auto; display: grid; gap: calc(20px * var(--space-y)); min-width: 0; padding-block: calc(8px * var(--space-y)); container: pc / inline-size; }
+.pc > * { min-width: 0; }
+.pc p { margin: 0; }
+
+.pc-fetch { display: flex; align-items: center; gap: calc(28px * var(--space-x)); }
+.pc-glyph { flex: none; margin: 0; font: 13px / 1.15 var(--mono); color: var(--brand); user-select: none; animation: popin 0.6s var(--ease-out) backwards; }
+.pc-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pc-title { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font: 600 15px / 1.3 var(--mono); color: var(--text); animation: rise-in 0.42s var(--ease-out) 0.12s backwards; }
+.pc-title b { color: var(--accent); }
+.pc-live { margin-inline-start: auto; display: inline-flex; align-items: center; gap: 6px; font: 500 12px var(--sans); color: var(--muted); }
+.pc-live i { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); animation: pc-pulse 2s ease-in-out infinite; }
+@keyframes pc-pulse { 50% { opacity: 0.25; } }
+
+.pc-rows { margin: 0; }
+.pc-row { display: grid; grid-template-columns: 5.25rem minmax(0, 1fr); gap: 12px; font-size: 13.5px; line-height: 1.75; animation: rise-in 0.42s var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 45ms + 120ms); }
+.pc-row dt { color: var(--muted); }
+.pc-row dd { margin: 0; min-width: 0; color: var(--text); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.pc-row dd b { font: 600 13px var(--mono); }
+
+.pc-plan { min-width: 0; animation: rise-in 0.42s var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 90ms + 120ms); }
+.pc-plan-head { display: flex; align-items: center; gap: 10px; min-width: 0; margin-bottom: calc(4px * var(--space-y)); }
+.pc-plan-head h3 { flex: 0 1 auto; margin: 0; color: var(--text); font: 600 13.5px / 1.4 var(--mono); }
+.pc-rule { flex: 1 1 1.5rem; min-width: 1rem; height: 1px; background: var(--hair); }
+.pc-count { flex: none; color: var(--muted); font-size: 12px; white-space: nowrap; }
+
+.pc-limits { margin: 0; padding: 0; list-style: none; }
+.pc-limit { display: grid; grid-template-columns: minmax(4.5rem, 6.5rem) minmax(0, 1fr) 3rem; grid-template-areas: "label gauge value" ". meta meta"; align-items: center; column-gap: 12px; padding-block: calc(6px * var(--space-y)); }
+.pc-label { grid-area: label; color: var(--muted); font-size: 13.5px; }
+.pc-gauge { grid-area: gauge; display: flex; gap: 2px; min-width: 0; }
+.pc-cell { flex: 1 1 0; min-width: 0; height: 14px; border-radius: calc(var(--r-tag) / 2.5); background: var(--hair-2); transition: background-color 0.35s var(--ease-out), transform 0.35s var(--ease-out); }
+.pc-cell.pc-on { background: var(--pc-tone, var(--ok)); }
+.pc-limit.pc-warning { --pc-tone: var(--warn); }
+.pc-limit.pc-critical { --pc-tone: var(--err); }
+.pc-value { grid-area: value; text-align: end; color: var(--text); font: 600 13.5px / 1.4 var(--mono); font-variant-numeric: tabular-nums; }
+.pc-unit { color: var(--muted); font-size: 11px; font-weight: 500; }
+
+.pc-flag { display: inline-flex; align-items: center; gap: 5px; color: var(--text); font-size: 12px; font-weight: 500; white-space: nowrap; }
+.pc-flag::before { content: ""; width: 7px; height: 7px; border-radius: 2px; background: var(--pc-tone, var(--ok)); }
+.pc-flag.pc-warning { --pc-tone: var(--warn); }
+.pc-flag.pc-critical { --pc-tone: var(--err); }
+
+.pc-meta { grid-area: meta; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 5px; margin-top: calc(3px * var(--space-y)); color: var(--muted); font-size: 12px; line-height: 1.4; font-variant-numeric: tabular-nums; }
+.pc-meta strong { color: var(--body); font-weight: 500; }
+.pc-sep { color: var(--faint); }
+
+/* The link: the last ping big, and a bar for each of the last 30 readings. A lost ping is a full bar in the error color. */
+.pc-net { padding-block: calc(6px * var(--space-y)); display: grid; gap: calc(8px * var(--space-y)); }
+.pc-net.pc-warning { --pc-tone: var(--warn); }
+.pc-net.pc-critical { --pc-tone: var(--err); }
+.pc-net-top { display: flex; align-items: baseline; gap: 12px; }
+.pc-balance-amount { color: var(--text); font: 600 22px / 1.2 var(--mono); font-variant-numeric: tabular-nums; }
+.pc-strip { display: flex; align-items: flex-end; gap: 2px; height: 36px; }
+.pc-bar { flex: 1 1 0; min-width: 0; height: var(--h); border-radius: calc(var(--r-tag) / 2.5); background: var(--ok); transform-origin: bottom; transition: height 0.35s var(--ease-out), background-color 0.35s var(--ease-out); animation: popin 0.4s var(--ease-out) backwards; }
+.pc-bar.pc-warning { background: var(--warn); }
+.pc-bar.pc-critical { background: var(--err); }
+.pc-bar.pc-none { background: var(--hair-2); height: 8%; }
+.pc-net .pc-meta { margin-top: 0; }
+
+.pc-state { display: flex; align-items: flex-start; gap: 10px; padding: calc(12px * var(--space-y)) calc(14px * var(--space-x)); border: 1px solid var(--err-line); border-radius: var(--r-card); background: var(--err-soft); }
+.pc-state > .icon { flex: none; margin-top: 2px; color: var(--err); }
+.pc-state-title { color: var(--text); font-size: 13.5px; font-weight: 600; }
+.pc-state-detail { margin-top: 2px; color: var(--body); font-size: 12.5px; overflow-wrap: anywhere; }
+
+@media (forced-colors: active) {
+    .pc-cell { border: 1px solid CanvasText; }
+    .pc .pc-cell.pc-on, .pc .pc-bar { forced-color-adjust: none; background: Highlight; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .pc-glyph, .pc-title, .pc-row, .pc-plan, .pc-bar, .pc-live i { animation: none; }
+    .pc-cell, .pc-bar { transition: none; }
+}
+@container pc (max-width: 34rem) {
+    .pc-glyph { display: none; }
+    .pc-limit { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "label value" "gauge gauge" "meta meta"; row-gap: calc(4px * var(--space-y)); }
+    .pc-label { color: var(--text); }
+    .pc-row { grid-template-columns: 4.5rem minmax(0, 1fr); gap: 10px; }
+}
+
+.pc-toggle { display: flex; align-items: center; gap: 10px; color: var(--text); font-size: 13px; cursor: pointer; animation: rise-in 0.42s var(--ease-out) 0.3s backwards; }
+.pc-quiet { color: var(--muted); }
